@@ -23,7 +23,7 @@ app.get("/screams", (req, res) => {
         screams.push({
           screamId: doc.id,
           userHandler: doc.data().userHandler,
-          body: doc.data().userHandler.body,
+          body: doc.data().userHandler,
           createdAt: doc.data().createdAt,
         });
       });
@@ -61,8 +61,10 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+let token, userId, newUser;
+
 app.post("/signUp", (req, resp) => {
-  const newUser = {
+  newUser = {
     email: req.body.email,
     password: req.body.password,
     confirm: req.body.confirm,
@@ -80,8 +82,22 @@ app.post("/signUp", (req, resp) => {
       }
     })
 
-    .then((data) => data.user.getIdToken())
-    .then((token) => resp.status(201).json({ token }))
+    .then((data) => {
+      userId = data.user.uid;
+      return data.user.getIdToken();
+    })
+    .then((t) => {
+      token = t;
+
+      const userConfig = {
+        email: newUser.email,
+        handle: newUser.handle,
+        createdAt: new Date().toISOString(),
+        userId,
+      };
+      db.doc(`users/${newUser.handle}`).set(userConfig);
+      return resp.status(201).json({ token });
+    })
     .catch((err) => resp.status(500).json({ message: err.code }));
 });
 
