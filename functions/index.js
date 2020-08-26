@@ -61,30 +61,53 @@ var firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
+const isEmail = (email) => {
+  const regEx = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return email.match(regEx);
+};
+
+const isEmpty = (string) => {
+  return string.trim() === "";
+};
+
 let token, userId, newUser;
 
-app.post("/signUp", (req, resp) => {
+app.post("/signUp", (req, res) => {
   newUser = {
     email: req.body.email,
     password: req.body.password,
     confirm: req.body.confirm,
     handle: req.body.handle,
   };
-  db.doc(`/users/${newUser.handle}`)
+  let errors = {};
+
+  if (isEmpty(newUser.email)) {
+    errors.email = "Must not be empty";
+  } else if (!isEmail(newUser.email)) {
+    errors.email = "Must be a valid email address";
+  }
+
+  if (isEmpty(newUser.password)) errors.password = "Must not be empty";
+  if (newUser.password !== newUser.confirm)
+    errors.confirm = "Passwords must match";
+  if (isEmpty(newUser.handle)) errors.handle = "Must not be empty";
+
+  if (Object.keys(errors).length > 0) return res.status(400).json({ errors });
+
+  db.doc(`users/${newUser.handle}`)
     .get()
     .then((doc) => {
       if (doc.exists) {
-        return resp.status(400).json({ message: "handle exists" });
+        return res.status(400).json({ message: "handle exists" });
       } else {
         return firebase
           .auth()
           .createUserWithEmailAndPassword(newUser.email, newUser.password);
       }
     })
-
-    .then((data) => {
-      userId = data.user.uid;
-      return data.user.getIdToken();
+    .then((file) => {
+      userId = file.user.uid;
+      return file.user.getIdToken();
     })
     .then((t) => {
       token = t;
@@ -95,10 +118,11 @@ app.post("/signUp", (req, resp) => {
         createdAt: new Date().toISOString(),
         userId,
       };
-      db.doc(`users/${newUser.handle}`).set(userConfig);
-      return resp.status(201).json({ token });
+      db.doc(`users/${userConfig.handle}`).set(userConfig);
+      console.log("userConfig", userConfig);
+      return res.status(201).json({ token });
     })
-    .catch((err) => resp.status(500).json({ message: err.code }));
+    .catch((err) => res.status(500).json({ message: err.message }));
 });
 
 exports.api = functions.https.onRequest(app);
