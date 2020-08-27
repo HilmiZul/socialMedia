@@ -1,14 +1,20 @@
 const functions = require("firebase-functions");
 //Read and write Realtime Database data with full admin privileges
-const { getAllScreams, postOneScream } = require("./handlers/screams");
+const {
+  getAllScreams,
+  postOneScream,
+  getScream,
+  commentScream,
+  likeScream,
+  unLikeScream,
+  deleteScream,
+} = require("./handlers/screams");
 const {
   signup,
   login,
   uploadImage,
   addUserDetails,
   getAuthUserDetails,
-  getScream,
-  commentScream,
 } = require("./handlers/users");
 const Auth = require("./util/Auth");
 //implicitly determine your credentials, allowing you to use service account credentials when testing or running in non-Google environments.
@@ -25,7 +31,10 @@ app.get("/screams", getAllScreams);
 app.post("/scream", Auth, postOneScream);
 app.get("/scream/:screamId", getScream);
 app.post("/scream/:screamId/comment", Auth, commentScream);
-//Delete scream, like a scream, unlike a scream, comment on scream,
+app.get("/scream/:screamId/like", Auth, likeScream);
+app.get("/scream/:screamId/unlike", Auth, unLikeScream);
+app.delete("/scream/:screamId", Auth, deleteScream);
+
 //users routes
 
 app.post("/signup", signup);
