@@ -13,6 +13,61 @@ const app = express();
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+//Authentication
+const Auth = (req, res, next) => {
+  let idToken;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer ")
+  ) {
+    //getting back the token that put in the header authentication
+    idToken = req.headers.authorization.split("Bearer ")[1];
+    console.log("idToken", idToken);
+  } else {
+    console.error("No token found");
+    return res.status(403).json({ error: "Unauthorized" });
+  }
+
+  admin
+    .auth()
+    .verifyIdToken(idToken)
+    .then((decodedToken) => {
+      // decodedToken {
+      //   >    iss: 'https://securetoken.google.com/xinyu-react-social',
+      //   >    aud: 'xinyu-react-social',
+      //   >    auth_time: 1598490714,
+      //   >    user_id: 'mvGroGTXL3QbcBFuflSuJ3v16882',
+      //   >    sub: 'mvGroGTXL3QbcBFuflSuJ3v16882',
+      //   >    iat: 1598490714,
+      //   >    exp: 1598494314,
+      //   >    email: 'xinyu.tang061433@gmail.com',
+      //   >    email_verified: false,
+      //   >    firebase: { identities: { email: [Array] }, sign_in_provider: 'password' },
+      //   >    uid: 'mvGroGTXL3QbcBFuflSuJ3v16882'
+      //   >  }
+      req.user = decodedToken;
+      return db
+        .collection("users")
+        .where("userId", "==", req.user.uid)
+        .limit(1)
+        .get();
+    })
+    .then((data) => {
+      // data.docs[0].data() {
+      //   >    createdAt: '2020-08-27T01:29:51.462Z',
+      //   >    handle: 'user12',
+      //   >    userId: 'WxPZWX1m40ZjEB0zdnGndHQfEUE2',
+      //   >    email: 'deiii@gmail.com'
+      //   >  }
+      req.user.handle = data.docs[0].data().handle;
+      return next();
+    })
+    .catch((err) => {
+      console.error("Error while verifying token ", err);
+      return res.status(403).json(err);
+    });
+};
+
 app.get("/screams", (req, res) => {
   db.collection("screams")
     .orderBy("createdAt", "desc")
@@ -32,10 +87,10 @@ app.get("/screams", (req, res) => {
     .catch((error) => console.log(error));
 });
 
-app.post("/screams", (req, res) => {
+app.post("/screams", Auth, (req, res) => {
   const scream = {
     body: req.body.body,
-    userHandle: req.body.userHandle,
+    userHandle: req.user.handle, //handle is coming from authentication which is coming from signup
     creatAt: new Date().toISOString(),
   };
   db.collection("screams")
@@ -72,7 +127,7 @@ const isEmpty = (string) => {
 
 let token, userId, newUser;
 
-app.post("/signUp", (req, res) => {
+app.post("/signup", (req, res) => {
   newUser = {
     email: req.body.email,
     password: req.body.password,
@@ -119,10 +174,43 @@ app.post("/signUp", (req, res) => {
         userId,
       };
       db.doc(`users/${userConfig.handle}`).set(userConfig);
-      console.log("userConfig", userConfig);
+
       return res.status(201).json({ token });
     })
     .catch((err) => res.status(500).json({ message: err.message }));
+});
+
+app.post("/login", (req, res) => {
+  const user = {
+    email: req.body.email,
+    password: req.body.password,
+  };
+
+  let errors = {};
+
+  if (isEmpty(user.email)) {
+    errors.email = "Must not be empty";
+  } else if (!isEmail(user.email)) {
+    errors.email = "Must be a valid email address";
+  }
+
+  if (isEmpty(user.password)) errors.password = "Must not be empty";
+  if (Object.keys(errors).length > 0) return res.status(400).json({ errors });
+
+  firebase
+    .auth()
+    .createUserWithEmailAndPassword(user.email, user.password)
+    .then((file) => file.user.getIdToken())
+    .then((token) => res.json({ token }))
+    .catch((err) => {
+      if (err.code === "auth/wrong-password") {
+        return res
+          .status(403)
+          .json({ general: "Wrong credentials, please try again" });
+      } else {
+        return res.status(500).json({ message: err.message });
+      }
+    });
 });
 
 exports.api = functions.https.onRequest(app);
