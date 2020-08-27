@@ -1,6 +1,8 @@
-const { db } = require("../util/admin");
+const { admin, db } = require("../util/admin");
 const firebase = require("firebase");
 const firebaseConfig = require("../util/config");
+const { v4: uuidv4 } = require("uuid");
+
 firebase.initializeApp(firebaseConfig);
 const { validateSignUp, validateLogin } = require("../util/validator");
 
@@ -13,10 +15,11 @@ exports.signup = (req, res) => {
     handle: req.body.handle,
   };
   const { errors, valid } = validateSignUp(newUser);
-  console.log("signup errors", errors);
+
   if (!valid) {
     return res.status(400).json({ errors });
   }
+  const noImg = "blank-profile-picture.png";
   db.doc(`users/${newUser.handle}`)
     .get()
     .then((doc) => {
@@ -39,6 +42,7 @@ exports.signup = (req, res) => {
         email: newUser.email,
         handle: newUser.handle,
         createdAt: new Date().toISOString(),
+        imageUrl: `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${noImg}?alt=media`,
         userId,
       };
       db.doc(`users/${userConfig.handle}`).set(userConfig);
@@ -74,4 +78,61 @@ exports.login = (req, res) => {
         return res.status(500).json({ message: err.message });
       }
     });
+};
+
+exports.uploadImage = (req, res) => {
+  const BusBody = require("busboy");
+  const path = require("path");
+  const os = require("os");
+  const fs = require("fs");
+
+  const busboy = new BusBody({ headers: req.headers });
+
+  let imageToBeUploaded;
+  let imageFileName;
+
+  busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+    console.log(fieldname, file, filename, encoding, mimetype);
+
+    if (mimetype !== "image/jpeg" && mimetype !== "image/png") {
+      return res.status(400).json({ error: "Wrong file type submitted" });
+    }
+
+    const imageExtension = filename.split(".")[filename.split(".").length - 1];
+
+    imageFileName = `${Math.round(
+      Math.random() * 1000000000000
+    ).toString()}.${imageExtension}`;
+
+    const filepath = path.join(os.tmpdir(), imageFileName);
+    imageToBeUploaded = { filepath, mimetype };
+    file.pipe(fs.createWriteStream(filepath));
+  });
+
+  busboy.on("finish", () => {
+    admin
+      .storage()
+      .bucket()
+      .upload(imageToBeUploaded.filepath, {
+        resumable: false,
+        metadata: {
+          metadata: {
+            contentType: imageToBeUploaded.mimetype,
+          },
+        },
+      })
+      .then(() => {
+        // Append token to url
+        const imageUrl = `https://firebasestorage.googleapis.com/v0/b/${firebaseConfig.storageBucket}/o/${imageFileName}?alt=media`;
+        return db.doc(`/users/${req.user.handle}`).update({ imageUrl });
+      })
+      .then(() => {
+        return res.json({ message: "image uploaded successfully" });
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.status(500).json({ error: "something went wrong" });
+      });
+  });
+  busboy.end(req.rawBody);
 };
