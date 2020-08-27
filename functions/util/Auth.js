@@ -47,6 +47,7 @@ module.exports = (req, res, next) => {
       //   >    email: 'deiii@gmail.com'
       //   >  }
       req.user.handle = data.docs[0].data().handle;
+      req.user.imageUrl = data.docs[0].data().imageUrl;
       return next();
     })
     .catch((err) => {
