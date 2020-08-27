@@ -1,10 +1,13 @@
 const { admin, db } = require("../util/admin");
 const firebase = require("firebase");
 const firebaseConfig = require("../util/config");
-const { v4: uuidv4 } = require("uuid");
 
 firebase.initializeApp(firebaseConfig);
-const { validateSignUp, validateLogin } = require("../util/validator");
+const {
+  validateSignUp,
+  validateLogin,
+  reduceUserDetails,
+} = require("../util/validator");
 
 let token, userId;
 exports.signup = (req, res) => {
@@ -66,7 +69,7 @@ exports.login = (req, res) => {
 
   firebase
     .auth()
-    .createUserWithEmailAndPassword(user.email, user.password)
+    .signInWithEmailAndPassword(user.email, user.password)
     .then((file) => file.user.getIdToken())
     .then((token) => res.json({ token }))
     .catch((err) => {
@@ -135,4 +138,46 @@ exports.uploadImage = (req, res) => {
       });
   });
   busboy.end(req.rawBody);
+};
+
+exports.addUserDetails = (req, res) => {
+  let userDetails = reduceUserDetails(req.body);
+
+  db.doc(`/users/${req.user.handle}`)
+    .update(userDetails)
+    .then(() => {
+      return res.json({ message: "Details added successfully" });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    });
+};
+
+//get own user details
+exports.getAuthUserDetails = (req, res) => {
+  let userData = {};
+  db.doc(`/users/${req.user.handle}`)
+    .get()
+    .then((doc) => {
+      if (doc.exists) {
+        userData.credentials = doc.data();
+        console.log("doc.data()...", doc.data());
+        return db
+          .collection("likes")
+          .where("userHandle", "==", req.user.handle)
+          .get();
+      }
+    })
+    .then((data) => {
+      userData.likes = [];
+      data.forEach((doc) => {
+        userData.likes.push(doc.data());
+      });
+      return res.json(userData);
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(500).json({ error: err.code });
+    });
 };
