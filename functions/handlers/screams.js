@@ -2,19 +2,18 @@ const { db } = require("../util/admin");
 
 exports.getAllScreams = (req, res) => {
   db.collection("screams")
-    .orderBy("createdAt", "desc")
     .get()
     .then((querySnapshot) => {
       let screams = [];
       querySnapshot.forEach((doc) => {
         screams.push({
           screamId: doc.id,
-          userHandler: doc.data().userHandler,
-          body: doc.data().userHandler,
+          userHandle: doc.data().userHandle,
+          body: doc.data().body,
           createdAt: doc.data().createdAt,
         });
       });
-      return res.json(screams);
+      return res.json({ screams });
     })
     .catch((error) => console.log(error));
 };
@@ -37,7 +36,7 @@ exports.postOneScream = (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).json({ error: "something went wrong" });
+      return res.status(500).json({ error: "something went wrong" });
     });
 };
 
@@ -53,7 +52,6 @@ exports.getScream = (req, res) => {
       screamData.screamId = doc.id;
       return db
         .collection("comments")
-        .orderBy("createdAt", "desc")
         .where("screamId", "==", req.params.screamId)
         .get();
     })
@@ -66,7 +64,7 @@ exports.getScream = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: err.code });
+      return res.status(500).json({ error: "something went wrong" });
     });
 };
 
@@ -102,7 +100,7 @@ exports.commentScream = (req, res) => {
     });
 };
 
-// Like a scream
+// // Like a scream
 exports.likeScream = (req, res) => {
   const likeDocument = db
     .collection("likes")
@@ -141,6 +139,10 @@ exports.likeScream = (req, res) => {
           })
           .then(() => {
             return res.json(screamData);
+          })
+          .catch((err) => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
           });
       } else {
         return res.status(400).json({ error: "Scream already liked" });
@@ -148,7 +150,7 @@ exports.likeScream = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: err.code });
+      return res.status(500).json({ error: err.code });
     });
 };
 
@@ -187,17 +189,21 @@ exports.unLikeScream = (req, res) => {
             return screamDocument.update({ likeCount: screamData.likeCount });
           })
           .then(() => {
-            res.json(screamData);
+            return res.json(screamData);
+          })
+          .catch((err) => {
+            console.error(err);
+            return res.status(500).json({ error: err.code });
           });
       }
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).json({ error: err.code });
+      return res.status(500).json({ error: err.code });
     });
 };
 
-exports.deleteScream = (req, res) => {
+exports.deleteScream = function (req, res) {
   const document = db.doc(`/screams/${req.params.screamId}`);
   document
     .get()
@@ -212,7 +218,7 @@ exports.deleteScream = (req, res) => {
       }
     })
     .then(() => {
-      return res.json({ message: "Scream deleted successfully" });
+      return es.json({ message: "Scream deleted successfully" });
     })
     .catch((err) => {
       console.error(err);
