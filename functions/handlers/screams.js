@@ -1,19 +1,21 @@
 const { db } = require("../util/admin");
 
 exports.getAllScreams = (req, res) => {
-  db.collection("screams")
+  return db
+    .collection("screams")
+    .orderBy("createdAt", "desc")
     .get()
     .then((querySnapshot) => {
       let screams = [];
       querySnapshot.forEach((doc) => {
         screams.push({
           screamId: doc.id,
-          userHandle: doc.data().userHandle,
-          body: doc.data().body,
+          userHandler: doc.data().userHandler,
+          body: doc.data().userHandler,
           createdAt: doc.data().createdAt,
         });
       });
-      return res.json({ screams });
+      return res.json(screams);
     })
     .catch((error) => console.log(error));
 };
@@ -27,7 +29,8 @@ exports.postOneScream = (req, res) => {
     likeCount: 0,
     commentCount: 0,
   };
-  db.collection("screams")
+  return db
+    .collection("screams")
     .add(scream)
     .then((doc) => {
       const newScream = scream;
@@ -42,7 +45,8 @@ exports.postOneScream = (req, res) => {
 
 exports.getScream = (req, res) => {
   let screamData = {};
-  db.doc(`screams/${req.params.screamId}`)
+  return db
+    .doc(`screams/${req.params.screamId}`)
     .get()
     .then((doc) => {
       if (!doc.exists) {
@@ -52,6 +56,7 @@ exports.getScream = (req, res) => {
       screamData.screamId = doc.id;
       return db
         .collection("comments")
+        .orderBy("createdAt", "desc")
         .where("screamId", "==", req.params.screamId)
         .get();
     })
@@ -64,7 +69,7 @@ exports.getScream = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).json({ error: "something went wrong" });
+      return res.status(500).json({ error: err.code });
     });
 };
 
@@ -80,7 +85,8 @@ exports.commentScream = (req, res) => {
     userImage: req.user.imageUrl,
   };
 
-  db.doc(`screams/${req.params.screamId}`)
+  return db
+    .doc(`screams/${req.params.screamId}`)
     .get()
     .then((doc) => {
       if (!doc.exists) {
@@ -112,7 +118,7 @@ exports.likeScream = (req, res) => {
 
   let screamData;
 
-  screamDocument
+  return screamDocument
     .get()
     .then((doc) => {
       if (doc.exists) {
@@ -166,7 +172,7 @@ exports.unLikeScream = (req, res) => {
 
   let screamData;
 
-  screamDocument
+  return screamDocument
     .get()
     .then((doc) => {
       if (doc.exists) {
@@ -205,7 +211,7 @@ exports.unLikeScream = (req, res) => {
 
 exports.deleteScream = function (req, res) {
   const document = db.doc(`/screams/${req.params.screamId}`);
-  document
+  return document
     .get()
     .then((doc) => {
       if (!doc.exists) {

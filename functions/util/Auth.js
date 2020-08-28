@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
     return res.status(403).json({ error: "Unauthorized" });
   }
 
-  admin
+  return admin
     .auth()
     .verifyIdToken(idToken)
     .then((decodedToken) => {

@@ -67,7 +67,7 @@ exports.login = (req, res) => {
     return res.status(400).json({ errors });
   }
 
-  firebase
+  return firebase
     .auth()
     .signInWithEmailAndPassword(user.email, user.password)
     .then((file) => file.user.getIdToken())
@@ -143,7 +143,8 @@ exports.uploadImage = (req, res) => {
 exports.addUserDetails = (req, res) => {
   let userDetails = reduceUserDetails(req.body);
 
-  db.doc(`/users/${req.user.handle}`)
+  return db
+    .doc(`/users/${req.user.handle}`)
     .update(userDetails)
     .then(() => {
       return res.json({ message: "Details added successfully" });
@@ -157,7 +158,8 @@ exports.addUserDetails = (req, res) => {
 //get own user details
 exports.getAuthUserDetails = (req, res) => {
   let userData = {};
-  db.doc(`/users/${req.user.handle}`)
+  return db
+    .doc(`/users/${req.user.handle}`)
     .get()
     .then((doc) => {
       if (doc.exists) {

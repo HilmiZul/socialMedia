@@ -1,9 +1,9 @@
 module.exports = {
-  apiKey: "AIzaSyDLlKEWB4O4uww_5vTmJYCSO-4OMg7DfL8",
-  authDomain: "social-latest.firebaseapp.com",
-  databaseURL: "https://social-latest.firebaseio.com",
-  projectId: "social-latest",
-  storageBucket: "social-latest.appspot.com",
-  messagingSenderId: "19884938574",
-  appId: "1:19884938574:web:a7ca3c83c5e3cab5e77a1f",
+  apiKey: "AIzaSyCh6yLCgz7xwLYdJPHR6r_PxARm84EYpyQ",
+  authDomain: "xinyu-react-social.firebaseapp.com",
+  databaseURL: "https://xinyu-react-social.firebaseio.com",
+  projectId: "xinyu-react-social",
+  storageBucket: "xinyu-react-social.appspot.com",
+  messagingSenderId: "498666966213",
+  appId: "1:498666966213:web:87c17de9cf150707af34ac",
 };
