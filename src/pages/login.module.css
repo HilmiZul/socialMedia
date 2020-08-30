@@ -13,6 +13,7 @@
 }
 
 .Button {
+  position: relative;
   color: green;
   font-size: 14px;
   padding: 10px 20px;
@@ -22,8 +23,19 @@
 .Button:hover {
   color: blue;
 }
+.Button:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+
+  color: #c0c0c0;
+  background-color: #ffffff;
+}
 
 .CustomError {
   color: red;
   font-size: 0.8rem;
+}
+
+.Progress {
+  position: absolute;
 }

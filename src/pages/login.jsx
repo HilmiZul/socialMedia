@@ -1,17 +1,20 @@
 import React, { Component } from "react";
 import classes from "./login.module.css";
 import ImageIcon from "../images/icon.png";
+import { Link } from "react-router-dom";
 // MUI Stuff
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
+
 class Login extends Component {
   state = {
     email: "",
     password: "",
     errors: "",
+    disabled: false,
     loading: false,
     error: {
       email: "",
@@ -30,6 +33,7 @@ class Login extends Component {
       .post("/login", userData)
       .then((res) => {
         console.log(res.data);
+        localStorage.setItem("IdToken", `Bearer ${res.data.token}`);
         this.setState({ loading: false });
         this.props.history.push("/home");
       })
@@ -43,20 +47,29 @@ class Login extends Component {
   };
 
   handleChange = (event) => {
-    if (this.validHandler(event.target.value)) {
-      const name = event.target.name;
-      const error = { ...this.state.error };
-      error[name] = "must not be empty";
-      this.setState({ error });
+    const message = this.validHandler(event.target.value, event.target.name);
+    const name = event.target.name;
+    const error = { ...this.state.error };
+    error[name] = message;
+    if (!message) {
+      this.setState({ disabled: false });
+    } else {
+      this.setState({ disabled: true });
     }
+
+    this.setState({ error });
     this.setState({ [event.target.name]: event.target.value });
   };
 
-  validHandler = (value) => {
-    return value.trim() === "";
+  validHandler = (value, name) => {
+    if (name === "password") {
+      return value.length >= 6 ? "" : "password should be longer than 6";
+    } else if (name === "email") {
+      return value.trim() === "" ? "must not be empty" : "";
+    }
   };
   render() {
-    const { errors, error } = this.state;
+    const { errors, error, loading, disabled } = this.state;
 
     return (
       <Grid container className={classes.Form}>
@@ -96,10 +109,20 @@ class Login extends Component {
                 {errors}
               </Typography>
             )}
-            <button type="submit" className={classes.Button}>
+            <button
+              type="submit"
+              className={classes.Button}
+              disabled={disabled}
+            >
               Login
+              {loading && (
+                <CircularProgress size={10} className={classes.Progress} />
+              )}
             </button>
           </form>
+          <small>
+            dont have an account ? sign up <Link to="/signup">here</Link>
+          </small>
         </Grid>
         <Grid item sm />
       </Grid>
