@@ -1,0 +1,29 @@
+.Form {
+  text-align: center;
+}
+.PageTitle {
+  margin: 20px auto;
+}
+.Image {
+  margin: 20px auto;
+  max-width: 100px;
+}
+.TextField {
+  margin: 10px auto;
+}
+
+.Button {
+  color: green;
+  font-size: 14px;
+  padding: 10px 20px;
+  border: transparent;
+  margin: 40px;
+}
+.Button:hover {
+  color: blue;
+}
+
+.CustomError {
+  color: red;
+  font-size: 0.8rem;
+}
