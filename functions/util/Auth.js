@@ -9,13 +9,12 @@ module.exports = (req, res, next) => {
   ) {
     //getting back the token that put in the header authentication
     idToken = req.headers.authorization.split("Bearer ")[1];
-    console.log("idToken", idToken);
   } else {
     console.error("No token found");
     return res.status(403).json({ error: "Unauthorized" });
   }
 
-  return admin
+  admin
     .auth()
     .verifyIdToken(idToken)
     .then((decodedToken) => {
@@ -51,7 +50,12 @@ module.exports = (req, res, next) => {
       return next();
     })
     .catch((err) => {
-      console.error("Error while verifying token ", err);
-      return res.status(403).json(err);
+      if (err.code === "auth/wrong-password") {
+        return res
+          .status(403)
+          .json({ error: "wrong credentials, please try again" });
+      }
+
+      return res.status(403).json({ err: err.code });
     });
 };

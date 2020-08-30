@@ -1,21 +1,22 @@
 const { db } = require("../util/admin");
 
 exports.getAllScreams = (req, res) => {
-  return db
-    .collection("screams")
-    .orderBy("createdAt", "desc")
+  db.collection("screams")
     .get()
     .then((querySnapshot) => {
       let screams = [];
       querySnapshot.forEach((doc) => {
         screams.push({
           screamId: doc.id,
-          userHandler: doc.data().userHandler,
-          body: doc.data().userHandler,
+          userHandle: doc.data().userHandle,
+          likeCount: doc.data().likeCount,
+          commentCount: doc.data().commentCount,
+          body: doc.data().body,
           createdAt: doc.data().createdAt,
+          userImage: doc.data().userImage,
         });
       });
-      return res.json(screams);
+      return res.json({ screams });
     })
     .catch((error) => console.log(error));
 };
@@ -24,13 +25,12 @@ exports.postOneScream = (req, res) => {
   const scream = {
     body: req.body.body,
     userHandle: req.user.handle, //handle is coming from authentication which is coming from signup
-    creatAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
     userImage: req.user.imageUrl,
     likeCount: 0,
     commentCount: 0,
   };
-  return db
-    .collection("screams")
+  db.collection("screams")
     .add(scream)
     .then((doc) => {
       const newScream = scream;
@@ -45,8 +45,7 @@ exports.postOneScream = (req, res) => {
 
 exports.getScream = (req, res) => {
   let screamData = {};
-  return db
-    .doc(`screams/${req.params.screamId}`)
+  db.doc(`screams/${req.params.screamId}`)
     .get()
     .then((doc) => {
       if (!doc.exists) {
@@ -56,7 +55,6 @@ exports.getScream = (req, res) => {
       screamData.screamId = doc.id;
       return db
         .collection("comments")
-        .orderBy("createdAt", "desc")
         .where("screamId", "==", req.params.screamId)
         .get();
     })
@@ -69,7 +67,7 @@ exports.getScream = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      return res.status(500).json({ error: err.code });
+      return res.status(500).json({ error: "something went wrong" });
     });
 };
 
@@ -85,8 +83,7 @@ exports.commentScream = (req, res) => {
     userImage: req.user.imageUrl,
   };
 
-  return db
-    .doc(`screams/${req.params.screamId}`)
+  db.doc(`screams/${req.params.screamId}`)
     .get()
     .then((doc) => {
       if (!doc.exists) {
@@ -118,7 +115,7 @@ exports.likeScream = (req, res) => {
 
   let screamData;
 
-  return screamDocument
+  screamDocument
     .get()
     .then((doc) => {
       if (doc.exists) {
@@ -172,7 +169,7 @@ exports.unLikeScream = (req, res) => {
 
   let screamData;
 
-  return screamDocument
+  screamDocument
     .get()
     .then((doc) => {
       if (doc.exists) {
@@ -211,7 +208,7 @@ exports.unLikeScream = (req, res) => {
 
 exports.deleteScream = function (req, res) {
   const document = db.doc(`/screams/${req.params.screamId}`);
-  return document
+  document
     .get()
     .then((doc) => {
       if (!doc.exists) {
