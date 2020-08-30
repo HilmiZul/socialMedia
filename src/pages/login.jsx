@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import classes from "./login.module.css";
 import ImageIcon from "../images/icon.png";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+
 // MUI Stuff
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
-import axios from "axios";
 
 //redux
 import { connect } from "react-redux";
@@ -16,9 +17,7 @@ class Login extends Component {
   state = {
     email: "",
     password: "",
-    errors: "",
     disabled: false,
-    loading: false,
     error: {
       email: "",
       password: "",
@@ -26,26 +25,11 @@ class Login extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    this.setState({ loading: true });
     const userData = {
       email: this.state.email,
       password: this.state.password,
     };
     this.props.login("./login", userData, this.props.history);
-    // axios
-    //   .post("/login", userData)
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     localStorage.setItem("IdToken", `Bearer ${res.data.token}`);
-    //     this.setState({ loading: false });
-    //     this.props.history.push("/home");
-    //   })
-    //   .catch((err) => {
-    //     this.setState({ errors: "invalid credentials" });
-    //     this.setState({ loading: false });
-    //     console.log(err);
-    //   });
-
     console.log("submit");
   };
 
@@ -72,7 +56,7 @@ class Login extends Component {
     }
   };
   render() {
-    const { errors, error, loading, disabled } = this.state;
+    const { error, disabled } = this.state;
 
     return (
       <Grid container className={classes.Form}>
@@ -107,9 +91,9 @@ class Login extends Component {
               onChange={this.handleChange}
               fullWidth
             />
-            {errors && (
+            {this.props.errors && (
               <Typography variant="body2" className={classes.CustomError}>
-                {errors}
+                {this.props.errors}
               </Typography>
             )}
             <button
@@ -118,7 +102,7 @@ class Login extends Component {
               disabled={disabled}
             >
               Login
-              {loading && (
+              {this.props.loading && (
                 <CircularProgress size={10} className={classes.Progress} />
               )}
             </button>
@@ -133,11 +117,19 @@ class Login extends Component {
   }
 }
 
+Login.propTypes = {
+  login: PropTypes.func.isRequired,
+  loading: PropTypes.object.isRequired,
+  errors: PropTypes.object.isRequired,
+};
+
+//state from the store, and properties of this object become our props
 const mapStateToProps = (state) => ({
-  user: state.user,
-  UI: state.UI,
+  loading: state.user.loading,
+  errors: state.user.errors,
 });
 
+//takes dispatch from the store and dispatch an action
 const mapActionsToProps = (dispatch) => {
   return {
     login: (url, userData, history) =>
@@ -145,4 +137,5 @@ const mapActionsToProps = (dispatch) => {
   };
 };
 
+//connect subscribe/unsubscribe the redux store
 export default connect(mapStateToProps, mapActionsToProps)(Login);
