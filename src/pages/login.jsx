@@ -9,6 +9,9 @@ import TextField from "@material-ui/core/TextField";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import axios from "axios";
 
+//redux
+import { connect } from "react-redux";
+import { apiCallBegan } from "../store/types";
 class Login extends Component {
   state = {
     email: "",
@@ -28,20 +31,20 @@ class Login extends Component {
       email: this.state.email,
       password: this.state.password,
     };
-
-    axios
-      .post("/login", userData)
-      .then((res) => {
-        console.log(res.data);
-        localStorage.setItem("IdToken", `Bearer ${res.data.token}`);
-        this.setState({ loading: false });
-        this.props.history.push("/home");
-      })
-      .catch((err) => {
-        this.setState({ errors: "invalid credentials" });
-        this.setState({ loading: false });
-        console.log(err);
-      });
+    this.props.login("./login", userData, this.props.history);
+    // axios
+    //   .post("/login", userData)
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     localStorage.setItem("IdToken", `Bearer ${res.data.token}`);
+    //     this.setState({ loading: false });
+    //     this.props.history.push("/home");
+    //   })
+    //   .catch((err) => {
+    //     this.setState({ errors: "invalid credentials" });
+    //     this.setState({ loading: false });
+    //     console.log(err);
+    //   });
 
     console.log("submit");
   };
@@ -130,4 +133,16 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => ({
+  user: state.user,
+  UI: state.UI,
+});
+
+const mapActionsToProps = (dispatch) => {
+  return {
+    login: (url, userData, history) =>
+      dispatch(apiCallBegan({ userData, url, history })),
+  };
+};
+
+export default connect(mapStateToProps, mapActionsToProps)(Login);
