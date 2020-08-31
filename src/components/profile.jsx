@@ -12,14 +12,16 @@ import classes from "./profile.module.css";
 import MuiLink from "@material-ui/core/Link";
 
 // Icons
-
-import EmailIcon from "@material-ui/icons/Email";
-import EditIcon from "@material-ui/icons/Edit";
+import LocationOn from "@material-ui/icons/LocationOn";
+import LinkIcon from "@material-ui/icons/Link";
 import CalendarToday from "@material-ui/icons/CalendarToday";
+import EditIcon from "@material-ui/icons/Edit";
+import EmailIcon from "@material-ui/icons/Email";
 
 //redux
 import { connect } from "react-redux";
 import { apiImageBegan } from "../store/types";
+import EditProfile from "./editProfile";
 
 class Profile extends Component {
   handleEditPicture = () => {
@@ -31,7 +33,7 @@ class Profile extends Component {
     const image = event.target.files[0];
     const formData = new FormData();
     formData.append("image", image, image.name);
-    this.props.uploadImage(formData);
+    this.props.uploadImage("./user/image", formData);
   };
 
   render() {
@@ -39,6 +41,9 @@ class Profile extends Component {
 
     if (this.props.fetchedData) {
       const {
+        bio,
+        website,
+        location,
         email,
         handle,
         createdAt,
@@ -49,20 +54,20 @@ class Profile extends Component {
           <div className={classes.Profile}>
             <div className={classes.ImageWrapper}>
               <img src={imageUrl} alt="profile" className={classes.Image} />
-              <input
-                type="file"
-                id="imageInput"
-                hidden="hidden"
-                onChange={this.handleImageChange}
-              />
-              <MyButton
-                tip="Edit profile picture"
-                onClick={this.handleEditPicture}
-                btnClassName="button"
-              >
-                <EditIcon color="primary" />
-              </MyButton>
             </div>
+            <input
+              type="file"
+              id="imageInput"
+              hidden="hidden"
+              onChange={this.handleImageChange}
+            />
+            <MyButton
+              tip="Edit profile picture"
+              onClick={this.handleEditPicture}
+              btnClassName="button"
+            >
+              <EditIcon color="primary" />
+            </MyButton>
           </div>
           <hr />
           <div className="profile-details">
@@ -76,18 +81,33 @@ class Profile extends Component {
                 @{handle}
               </MuiLink>
             </span>
+            {bio && <Typography variant="body2">{bio}</Typography>}
             <hr />
-            <span>
-              {email && (
-                <Fragment>
-                  <EmailIcon color="primary" /> <span>{email}</span>
-                  <hr />
-                </Fragment>
-              )}
-            </span>
+            {location && (
+              <Fragment>
+                <LocationOn color="primary" /> <span>{location}</span>
+                <hr />
+              </Fragment>
+            )}
+            {website && (
+              <Fragment>
+                <LinkIcon color="primary" />
+                <a href={website} target="_blank" rel="noopener noreferrer">
+                  {website}
+                </a>
+                <hr />
+              </Fragment>
+            )}
+            {email && (
+              <Fragment>
+                <EmailIcon color="primary" /> <span>{email}</span>
+                <hr />
+              </Fragment>
+            )}
             <CalendarToday color="primary" />{" "}
             <span>Joined {dayjs(createdAt).format("MMM YYYY")}</span>
           </div>
+          <EditProfile />
         </Paper>
       );
     } else {
@@ -99,12 +119,14 @@ class Profile extends Component {
             <Typography variant="body2" align="center">
               No profile found, please login again
             </Typography>
+
             <div className={classes.Buttons}>
               <Button
                 variant="contained"
                 color="primary"
                 component={Link}
                 to="/login"
+                style={{ margin: "10px" }}
               >
                 Login
               </Button>
@@ -113,6 +135,7 @@ class Profile extends Component {
                 color="secondary"
                 component={Link}
                 to="/signup"
+                style={{ margin: "10px" }}
               >
                 Signup
               </Button>
@@ -134,7 +157,7 @@ const mapStateToProps = (state) => ({
 //takes dispatch from the store and dispatch an action
 const mapActionsToProps = (dispatch) => {
   return {
-    uploadImage: (image) => dispatch(apiImageBegan({ image })),
+    uploadImage: (url, data) => dispatch(apiImageBegan({ url, data })),
   };
 };
 

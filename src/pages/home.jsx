@@ -26,11 +26,11 @@ class Home extends Component {
       <p>{"loading..."}</p>
     );
     return (
-      <Grid container sx={12}>
-        <Grid item sm={6} sx={12}>
+      <Grid container spacing={10} sx={12}>
+        <Grid item sm={7} sx={12}>
           {recentScream}
         </Grid>
-        <Grid item sm={6} sx={12}>
+        <Grid item sm={5} sx={12}>
           <Profile />
         </Grid>
       </Grid>

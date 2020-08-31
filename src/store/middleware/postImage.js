@@ -8,11 +8,10 @@ export const post_image_api = ({ dispatch, getState }) => (next) => (
   //if action is a function such as api call then
   next(action); // passing action to next middleware - the reducer
 
-  const { image } = action.payload;
-  console.log("userData", image);
-
+  const { url, data } = action.payload;
+  console.log("data is", data);
   axios
-    .post(`/user/image`, image)
+    .post(`${url}`, data)
     .then((res) => {
       dispatch(actions.apiImageSuccess());
       dispatch(actions.apiGetBegan({ url: "./user" }));

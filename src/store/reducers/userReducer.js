@@ -14,7 +14,7 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case actions.apiCallBegan.type:
-      console.log("user submit login form");
+      console.log("user submit form");
       return {
         ...state,
         loading: true,

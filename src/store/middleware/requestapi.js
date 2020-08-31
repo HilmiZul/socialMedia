@@ -9,7 +9,7 @@ export const request_api = ({ dispatch }) => (next) => (action) => {
   const { url } = action.payload;
 
   axios
-    .get(`/${url}`)
+    .get(`${url}`)
     .then((res) => dispatch(actions.apiGetSuccess(res.data)))
     .catch((error) => {
       console.log("error", error);

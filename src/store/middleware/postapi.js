@@ -9,11 +9,11 @@ export const post_api = ({ dispatch, getState }) => (next) => (action) => {
   const { url, userData, history } = action.payload;
 
   axios
-    .post(`/${url}`, userData)
+    .post(`${url}`, userData, history)
     .then((res) => {
       dispatch(actions.apiCallSuccess(res.data.token));
       dispatch(actions.apiGetBegan({ url: "./user" }));
-      history.push("/home");
+      history.push("home");
     })
     .catch((error) => {
       if (error.response.data.general) {
