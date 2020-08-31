@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as actions from "../types";
 
-export const api = ({ dispatch, getState }) => (next) => (action) => {
+export const post_api = ({ dispatch, getState }) => (next) => (action) => {
   if (action.type !== actions.apiCallBegan.type) return next(action);
   //if action is a function such as api call then
   next(action); // passing action to next middleware - the reducer

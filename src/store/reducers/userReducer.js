@@ -5,7 +5,6 @@ const initialState = {
   authenticated: false,
   loading: false,
   errors: null,
-  token: null,
 };
 
 export default function (state = initialState, action) {

@@ -4,3 +4,8 @@ export const setAuthorizationHeader = (token) => {
   localStorage.setItem("IdToken", IdToken);
   axios.defaults.headers.common["Authorization"] = IdToken; //Attach Authorization header for all axios requests
 };
+
+export const removeAuthorizationHeader = () => {
+  localStorage.removeItem("IdToken");
+  delete axios.defaults.headers.common["Authorization"];
+};
