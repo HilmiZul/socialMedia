@@ -2,18 +2,16 @@ import { createStore, combineReducers, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { post_api } from "./middleware/postapi";
 import { request_api } from "./middleware/requestapi";
-import { post_image_api } from "./middleware/postImage";
+import { post_api_detail } from "./middleware/postapidetail";
 
 import userReducer from "./reducers/userReducer";
 import dataReducer from "./reducers/dataReducer";
-import uiReducer from "./reducers/uiReducer";
 
-const middleware = [thunk, post_api, request_api, post_image_api];
+const middleware = [thunk, post_api, request_api, post_api_detail];
 
 const reducers = combineReducers({
   user: userReducer,
   data: dataReducer,
-  UI: uiReducer,
 });
 
 const composeEnhancers =

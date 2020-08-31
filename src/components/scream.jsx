@@ -9,21 +9,22 @@ import Typography from "@material-ui/core/Typography";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import LikeButton from "./likeButton";
+
+// Redux
 
 class Scream extends Component {
   render() {
     dayjs.extend(relativeTime);
     const {
-      scream: {
-        body,
-        createdAt,
-        userImage,
-        userHandle,
-        screamId,
-        likeCount,
-        commentCount,
-      },
-    } = this.props;
+      body,
+      createdAt,
+      userImage,
+      userHandle,
+      screamId,
+      likeCount,
+      commentCount,
+    } = this.props.scream;
     return (
       <Card className={classes.Card}>
         <CardMedia
@@ -44,6 +45,8 @@ class Scream extends Component {
             {dayjs(createdAt).fromNow()}
           </Typography>
           <Typography variant="body1">{body}</Typography>
+          <LikeButton screamId={screamId} />
+          <span>{likeCount} Likes</span>
         </CardContent>
       </Card>
     );

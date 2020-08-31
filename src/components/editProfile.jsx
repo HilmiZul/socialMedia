@@ -11,7 +11,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 // Icons
 import EditIcon from "@material-ui/icons/Edit";
-import { apiImageBegan } from "../store/types";
+import { apiPostBegan } from "../store/actions";
 import { connect } from "react-redux";
 
 class EditProfile extends Component {
@@ -129,7 +129,7 @@ const mapStateToProps = (state) => ({
 //takes dispatch from the store and dispatch an action
 const mapActionsToProps = (dispatch) => {
   return {
-    postUserDetail: (url, data) => dispatch(apiImageBegan({ url, data })),
+    postUserDetail: (url, data) => dispatch(apiPostBegan({ url, data })),
   };
 };
 

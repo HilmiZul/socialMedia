@@ -1,4 +1,4 @@
-import * as actions from "../types";
+import * as actions from "../actions";
 import { setAuthorizationHeader, removeAuthorizationHeader } from "../helper";
 
 const initialState = {
@@ -21,7 +21,7 @@ export default function (state = initialState, action) {
         errors: null,
       };
 
-    case actions.apiGetBegan.type:
+    case actions.apiGetUserBegan.type:
       console.log("user start fetching data");
       return {
         ...state,
@@ -30,8 +30,8 @@ export default function (state = initialState, action) {
         fetchedData: null,
       };
 
-    case actions.apiImageBegan.type:
-      console.log("image uploading.. ");
+    case actions.apiPostBegan.type:
+      console.log("posting data.. ");
       return {
         ...state,
       };
@@ -45,7 +45,7 @@ export default function (state = initialState, action) {
         authenticated: true,
       };
 
-    case actions.apiGetSuccess.type:
+    case actions.apiGetUserSuccess.type:
       console.log("data successfully fetched as", action.payload);
 
       return {
@@ -54,7 +54,7 @@ export default function (state = initialState, action) {
         fetchedData: action.payload,
       };
 
-    case actions.apiImageSuccess.type:
+    case actions.apiPostSuccess.type:
       console.log("image successfully uploaded");
       return {
         ...state,
@@ -68,7 +68,7 @@ export default function (state = initialState, action) {
         errors: action.payload,
       };
 
-    case actions.apiGetFailed.type:
+    case actions.apiGetUserFailed.type:
       console.log("login failed : ", action.payload);
       return {
         ...state,
@@ -76,7 +76,7 @@ export default function (state = initialState, action) {
         fetch_errors: action.payload,
       };
 
-    case actions.apiImageFailed.type:
+    case actions.apiPostFailed.type:
       console.log("Image Failed: ", action.payload);
       return {
         ...state,
@@ -86,6 +86,8 @@ export default function (state = initialState, action) {
     case actions.logoutUser.type:
       console.log("logging out user");
       removeAuthorizationHeader();
+      window.location.replace("/home");
+
       return {
         ...state,
         authenticated: false,

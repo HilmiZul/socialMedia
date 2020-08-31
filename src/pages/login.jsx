@@ -12,7 +12,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 
 //redux
 import { connect } from "react-redux";
-import { apiCallBegan } from "../store/types";
+import { apiCallBegan } from "../store/actions";
 class Login extends Component {
   state = {
     email: "",

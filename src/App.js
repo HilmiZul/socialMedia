@@ -19,7 +19,7 @@ import jwtDecode from "jwt-decode";
 import Auth from "./util/auth";
 
 //redux
-import { logoutUser } from "./store/types";
+import { logoutUser } from "./store/actions";
 
 const token = localStorage.IdToken;
 if (token) {

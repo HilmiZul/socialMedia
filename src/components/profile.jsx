@@ -20,7 +20,7 @@ import EmailIcon from "@material-ui/icons/Email";
 
 //redux
 import { connect } from "react-redux";
-import { apiImageBegan } from "../store/types";
+import { apiPostBegan } from "../store/actions";
 import EditProfile from "./editProfile";
 
 class Profile extends Component {
@@ -157,7 +157,7 @@ const mapStateToProps = (state) => ({
 //takes dispatch from the store and dispatch an action
 const mapActionsToProps = (dispatch) => {
   return {
-    uploadImage: (url, data) => dispatch(apiImageBegan({ url, data })),
+    uploadImage: (url, data) => dispatch(apiPostBegan({ url, data })),
   };
 };
 

@@ -5,7 +5,7 @@ import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
 //redux
 import { connect } from "react-redux";
-import { logoutUser } from "../store/types";
+import { logoutUser } from "../store/actions";
 
 class Nav extends Component {
   render() {

@@ -3,24 +3,21 @@ import Grid from "@material-ui/core/Grid";
 import axios from "axios";
 import Scream from "../components/scream";
 import Profile from "../components/profile";
+// REdux
+import { connect } from "react-redux";
+import { apiGetScreamBegan } from "../store/actions";
 
 class Home extends Component {
   state = {
     screams: null,
   };
   componentDidMount() {
-    axios
-      .get("/screams")
-      .then((res) => {
-        console.log(res.data);
-        this.setState({ screams: res.data.screams });
-      })
-      .catch((err) => console.log(err));
+    this.props.getAllScreams("./screams");
   }
   render() {
-    let recentScream = this.state.screams ? (
-      this.state.screams.map((scream, id) => (
-        <Scream key={id + "scream"} scream={scream}></Scream>
+    let recentScream = this.props.screams ? (
+      this.props.screams.map((scream, id) => (
+        <Scream key={id + "scream"} scream={scream} />
       ))
     ) : (
       <p>{"loading..."}</p>
@@ -38,5 +35,17 @@ class Home extends Component {
   }
 }
 
+//state from the store, and properties of this object become our props
+const mapStateToProps = (state) => ({
+  screams: state.data.screams,
+});
+
+//takes dispatch from the store and dispatch an action
+const mapActionsToProps = (dispatch) => {
+  return {
+    getAllScreams: (url) => dispatch(apiGetScreamBegan({ url })),
+  };
+};
+
 //connect subscribe/unsubscribe the redux store
-export default Home;
+export default connect(mapStateToProps, mapActionsToProps)(Home);

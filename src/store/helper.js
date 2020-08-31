@@ -1,4 +1,5 @@
 import axios from "axios";
+
 export const setAuthorizationHeader = (token) => {
   const IdToken = `Bearer ${token}`;
   localStorage.setItem("IdToken", IdToken);
