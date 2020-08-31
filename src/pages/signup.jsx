@@ -159,7 +159,6 @@ class SignUp extends Component {
 SignUp.propTypes = {
   signup: PropTypes.func.isRequired,
   loading: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired,
 };
 
 //state from the store, and properties of this object become our props

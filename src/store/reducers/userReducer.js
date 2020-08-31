@@ -8,6 +8,7 @@ const initialState = {
   fetch_loading: false,
   fetch_errors: null,
   fetchedData: null,
+  image_errors: null,
 };
 
 export default function (state = initialState, action) {
@@ -29,6 +30,12 @@ export default function (state = initialState, action) {
         fetchedData: null,
       };
 
+    case actions.apiImageBegan.type:
+      console.log("image uploading.. ");
+      return {
+        ...state,
+      };
+
     case actions.apiCallSuccess.type:
       console.log("login successfully setting token as", action.payload);
       setAuthorizationHeader(action.payload);
@@ -47,6 +54,12 @@ export default function (state = initialState, action) {
         fetchedData: action.payload,
       };
 
+    case actions.apiImageSuccess.type:
+      console.log("image successfully uploaded");
+      return {
+        ...state,
+      };
+
     case actions.apiCallFailed.type:
       console.log("login failed : ", action.payload);
       return {
@@ -61,6 +74,13 @@ export default function (state = initialState, action) {
         ...state,
         fetch_loading: false,
         fetch_errors: action.payload,
+      };
+
+    case actions.apiImageFailed.type:
+      console.log("Image Failed: ", action.payload);
+      return {
+        ...state,
+        image_errors: action.payload,
       };
 
     case actions.logoutUser.type:

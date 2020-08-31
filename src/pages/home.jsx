@@ -3,9 +3,6 @@ import Grid from "@material-ui/core/Grid";
 import axios from "axios";
 import Scream from "../components/scream";
 import Profile from "../components/profile";
-//redux
-import { connect } from "react-redux";
-import { apiGetBegan } from "../store/types";
 
 class Home extends Component {
   state = {
