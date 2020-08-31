@@ -12,6 +12,7 @@ export const post_api = ({ dispatch, getState }) => (next) => (action) => {
     .post(`/${url}`, userData)
     .then((res) => {
       dispatch(actions.apiCallSuccess(res.data.token));
+      dispatch(actions.apiGetBegan({ url: "./user" }));
       history.push("/home");
     })
     .catch((error) => {

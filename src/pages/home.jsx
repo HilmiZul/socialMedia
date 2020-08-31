@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
 import axios from "axios";
 import Scream from "../components/scream";
+import Profile from "../components/profile";
+//redux
+import { connect } from "react-redux";
+import { apiGetBegan } from "../store/types";
 
 class Home extends Component {
   state = {
-    scream: null,
+    screams: null,
   };
-
   componentDidMount() {
     axios
       .get("/screams")
@@ -26,16 +29,17 @@ class Home extends Component {
       <p>{"loading..."}</p>
     );
     return (
-      <Grid container spacing={10}>
-        <Grid item sm={8} sx={12}>
+      <Grid container sx={12}>
+        <Grid item sm={6} sx={12}>
           {recentScream}
         </Grid>
-        <Grid item sm={4} sx={12}>
-          <p>Profile</p>
+        <Grid item sm={6} sx={12}>
+          <Profile />
         </Grid>
       </Grid>
     );
   }
 }
 
+//connect subscribe/unsubscribe the redux store
 export default Home;

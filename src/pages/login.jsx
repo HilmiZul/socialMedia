@@ -119,8 +119,7 @@ class Login extends Component {
 
 Login.propTypes = {
   login: PropTypes.func.isRequired,
-  loading: PropTypes.object.isRequired,
-  errors: PropTypes.object.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 //state from the store, and properties of this object become our props

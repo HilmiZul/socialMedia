@@ -1,20 +1,18 @@
-import {
-  apiCallSuccess,
-  apiCallFailed,
-  apiCallBegan,
-  logoutUser,
-} from "../types";
+import * as actions from "../types";
 import { setAuthorizationHeader, removeAuthorizationHeader } from "../helper";
 
 const initialState = {
   authenticated: false,
   loading: false,
   errors: null,
+  fetch_loading: false,
+  fetch_errors: null,
+  fetchedData: null,
 };
 
 export default function (state = initialState, action) {
   switch (action.type) {
-    case apiCallBegan.type:
+    case actions.apiCallBegan.type:
       console.log("user submit login form");
       return {
         ...state,
@@ -22,7 +20,16 @@ export default function (state = initialState, action) {
         errors: null,
       };
 
-    case apiCallSuccess.type:
+    case actions.apiGetBegan.type:
+      console.log("user start fetching data");
+      return {
+        ...state,
+        fetch_loading: true,
+        fetch_errors: null,
+        fetchedData: null,
+      };
+
+    case actions.apiCallSuccess.type:
       console.log("login successfully setting token as", action.payload);
       setAuthorizationHeader(action.payload);
       return {
@@ -30,7 +37,17 @@ export default function (state = initialState, action) {
         loading: false,
         authenticated: true,
       };
-    case apiCallFailed.type:
+
+    case actions.apiGetSuccess.type:
+      console.log("data successfully fetched as", action.payload);
+
+      return {
+        ...state,
+        fetch_loading: false,
+        fetchedData: action.payload,
+      };
+
+    case actions.apiCallFailed.type:
       console.log("login failed : ", action.payload);
       return {
         ...state,
@@ -38,13 +55,24 @@ export default function (state = initialState, action) {
         errors: action.payload,
       };
 
-    case logoutUser.type:
+    case actions.apiGetFailed.type:
+      console.log("login failed : ", action.payload);
+      return {
+        ...state,
+        fetch_loading: false,
+        fetch_errors: action.payload,
+      };
+
+    case actions.logoutUser.type:
       console.log("logging out user");
       removeAuthorizationHeader();
       return {
         ...state,
         authenticated: false,
       };
+
+    case actions.apiUserInfo.type:
+      return state.fetchedData;
 
     default:
       return state;
