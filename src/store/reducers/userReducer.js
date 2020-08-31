@@ -1,5 +1,10 @@
-import { apiCallSuccess, apiCallFailed, apiCallBegan } from "../types";
-import { setAuthorizationHeader } from "../helper";
+import {
+  apiCallSuccess,
+  apiCallFailed,
+  apiCallBegan,
+  logoutUser,
+} from "../types";
+import { setAuthorizationHeader, removeAuthorizationHeader } from "../helper";
 
 const initialState = {
   authenticated: false,
@@ -32,6 +37,15 @@ export default function (state = initialState, action) {
         loading: false,
         errors: action.payload,
       };
+
+    case logoutUser.type:
+      console.log("logging out user");
+      removeAuthorizationHeader();
+      return {
+        ...state,
+        authenticated: false,
+      };
+
     default:
       return state;
   }

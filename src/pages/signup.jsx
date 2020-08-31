@@ -157,7 +157,7 @@ class SignUp extends Component {
 }
 
 SignUp.propTypes = {
-  login: PropTypes.func.isRequired,
+  signup: PropTypes.func.isRequired,
   loading: PropTypes.object.isRequired,
   errors: PropTypes.object.isRequired,
 };

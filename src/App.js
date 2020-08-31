@@ -1,9 +1,9 @@
+//react
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 //redux
 import { Provider } from "react-redux";
 import store from "./store/store";
-
 //css
 import "./App.css";
 import { ThemeProvider as MuiThemeProvider } from "@material-ui/core/styles";
@@ -18,16 +18,15 @@ import Nav from "./components/nav.jsx";
 import jwtDecode from "jwt-decode";
 import Auth from "./util/auth";
 
+//redux
+import { logoutUser } from "./store/types";
+
 const token = localStorage.IdToken;
-let authenticated;
 if (token) {
   const decodedToken = jwtDecode(token);
   if (decodedToken.exp * 1000 < Date.now()) {
-    authenticated = false;
+    store(store.dispatch(logoutUser()));
     // window.location.href = "/login";
-  } else {
-    authenticated = true;
-    // axios.defaults.headers.common["Authorization"] = token;
   }
 }
 
@@ -66,13 +65,13 @@ function App() {
                   exact
                   path="/login"
                   component={Login}
-                  authenticated={authenticated}
+                  authenticated={store.getState().authenticated}
                 />
                 <Auth
                   exact
                   path="/signup"
                   component={SignUp}
-                  authenticated={authenticated}
+                  authenticated={store.getState().user.authenticated}
                 />
               </Switch>
             </div>
@@ -83,4 +82,5 @@ function App() {
   );
 }
 
+//connect subscribe/unsubscribe the redux store
 export default App;
