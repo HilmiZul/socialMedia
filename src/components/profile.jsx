@@ -39,7 +39,7 @@ class Profile extends Component {
   render() {
     let paper;
 
-    if (this.props.fetchedData) {
+    if (this.props.credentials) {
       const {
         bio,
         website,
@@ -48,7 +48,7 @@ class Profile extends Component {
         handle,
         createdAt,
         imageUrl,
-      } = this.props.fetchedData.credentials;
+      } = this.props.credentials;
       paper = (
         <Paper className={classes.Paper}>
           <div className={classes.Profile}>
@@ -150,7 +150,7 @@ class Profile extends Component {
 }
 //state from the store, and properties of this object become our props
 const mapStateToProps = (state) => ({
-  fetchedData: state.user.fetchedData,
+  credentials: state.user.credentials,
   loading: state.user.fetch_loading,
 });
 

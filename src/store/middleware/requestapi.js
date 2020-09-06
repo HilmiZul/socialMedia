@@ -38,7 +38,9 @@ export const request_api = ({ dispatch }) => (next) => (action) => {
     const { screamId } = action.payload;
     axios
       .get(`./scream/${screamId}/unlike`)
-      .then((res) => dispatch(actions.apiUnLikeScreamSuccess(res.data)))
+      .then((res) => {
+        dispatch(actions.apiUnLikeScreamSuccess(res.data));
+      })
       .catch((error) => {
         if (error.response.data.general) {
           dispatch(actions.apiUnLikeScreamFailed(error.response.data.general));

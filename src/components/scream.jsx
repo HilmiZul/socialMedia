@@ -11,18 +11,17 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import LikeButton from "./likeButton";
 
-// Redux
-
 class Scream extends Component {
   render() {
+    console.log("like count is ", this.props.scream.likeCount);
     dayjs.extend(relativeTime);
     const {
       body,
       createdAt,
       userImage,
       userHandle,
-      screamId,
       likeCount,
+      screamId,
       commentCount,
     } = this.props.scream;
     return (
@@ -53,4 +52,5 @@ class Scream extends Component {
   }
 }
 
+//connect subscribe/unsubscribe the redux store
 export default Scream;

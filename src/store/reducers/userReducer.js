@@ -3,11 +3,15 @@ import { setAuthorizationHeader, removeAuthorizationHeader } from "../helper";
 
 const initialState = {
   authenticated: false,
+
+  credentials: null,
+  likes: [],
+  notifications: [],
+
   loading: false,
   errors: null,
   fetch_loading: false,
   fetch_errors: null,
-  fetchedData: null,
   image_errors: null,
 };
 
@@ -27,7 +31,6 @@ export default function (state = initialState, action) {
         ...state,
         fetch_loading: true,
         fetch_errors: null,
-        fetchedData: null,
       };
 
     case actions.apiPostBegan.type:
@@ -51,7 +54,8 @@ export default function (state = initialState, action) {
       return {
         ...state,
         fetch_loading: false,
-        fetchedData: action.payload,
+        credentials: action.payload.credentials,
+        likes: action.payload.likes,
       };
 
     case actions.apiPostSuccess.type:
@@ -94,7 +98,31 @@ export default function (state = initialState, action) {
       };
 
     case actions.apiUserInfo.type:
-      return state.fetchedData;
+      return state.credentials;
+
+    case actions.apiLikeScreamSuccess.type:
+      return {
+        ...state,
+        likes: [
+          ...state.likes,
+          {
+            userHandle: state.credentials.handle,
+            screamId: action.payload.screamId,
+          },
+        ],
+      };
+
+    case actions.apiUnLikeScreamSuccess.type:
+      return {
+        ...state,
+        likes: state.likes.filter(
+          (like) => like.screamId !== action.payload.screamId
+        ),
+      };
+
+    case actions.apiLikeScreamFailed.type:
+    case actions.apiUnLikeScreamFailed.type:
+      console.log("apiLikeScreamFailed : ", action.payload);
 
     default:
       return state;

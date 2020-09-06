@@ -15,13 +15,15 @@ import { apiLikeScreamBegan, apiUnLikeScreamBegan } from "../store/actions";
 class LikeButton extends Component {
   likedScream = () => {
     if (
-      this.props.fetchedData &&
-      this.props.fetchedData.likes.find(
+      this.props.user &&
+      this.props.user.likes.find(
         (like) => like.screamId === this.props.screamId
       )
-    )
+    ) {
       return true;
-    else return false;
+    } else {
+      return false;
+    }
   };
 
   render() {
@@ -52,14 +54,13 @@ class LikeButton extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  fetchedData: state.user.fetchedData,
+  user: state.user,
   authenticated: state.user.authenticated,
 });
 
 const mapActionsToProps = (dispatch) => {
   return {
-    likeScream: (screamId, history) =>
-      dispatch(apiLikeScreamBegan({ screamId })),
+    likeScream: (screamId) => dispatch(apiLikeScreamBegan({ screamId })),
     unLikeScream: (screamId) => dispatch(apiUnLikeScreamBegan({ screamId })),
   };
 };

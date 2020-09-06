@@ -23,7 +23,7 @@ class EditProfile extends Component {
   };
 
   componentDidMount() {
-    const { credentials } = this.props.fetchedData;
+    const credentials = this.props.credentials;
     this.setState({
       bio: credentials.bio ? credentials.bio : "",
       website: credentials.website ? credentials.website : "",
@@ -123,7 +123,7 @@ class EditProfile extends Component {
 
 //state from the store, and properties of this object become our props
 const mapStateToProps = (state) => ({
-  fetchedData: state.user.fetchedData,
+  credentials: state.user.credentials,
 });
 
 //takes dispatch from the store and dispatch an action

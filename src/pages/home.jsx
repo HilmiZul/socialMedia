@@ -8,15 +8,13 @@ import { connect } from "react-redux";
 import { apiGetScreamBegan } from "../store/actions";
 
 class Home extends Component {
-  state = {
-    screams: null,
-  };
   componentDidMount() {
     this.props.getAllScreams("./screams");
   }
+
   render() {
-    let recentScream = this.props.screams ? (
-      this.props.screams.map((scream, id) => (
+    let recentScream = this.props.data.screams ? (
+      this.props.data.screams.map((scream, id) => (
         <Scream key={id + "scream"} scream={scream} />
       ))
     ) : (
@@ -37,7 +35,7 @@ class Home extends Component {
 
 //state from the store, and properties of this object become our props
 const mapStateToProps = (state) => ({
-  screams: state.data.screams,
+  data: state.data, //screams does not change, because shallow copy of scream object
 });
 
 //takes dispatch from the store and dispatch an action
