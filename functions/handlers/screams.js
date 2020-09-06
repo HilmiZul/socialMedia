@@ -207,24 +207,14 @@ exports.unLikeScream = (req, res) => {
 };
 
 exports.deleteScream = function (req, res) {
-  const document = db.doc(`/screams/${req.params.screamId}`);
-  document
-    .get()
-    .then((doc) => {
-      if (!doc.exists) {
-        return res.status(404).json({ error: "Scream not found" });
-      }
-      if (doc.data().userHandle !== req.user.handle) {
-        return res.status(403).json({ error: "Unauthorized" });
-      } else {
-        return document.delete();
-      }
-    })
+  return db
+    .doc(`/screams/${req.params.screamId}`)
+    .delete()
     .then(() => {
-      return es.json({ message: "Scream deleted successfully" });
+      console.log("delete successfully");
+      return res.json({ message: "delete successfully" });
     })
     .catch((err) => {
-      console.error(err);
       return res.status(500).json({ error: err.code });
     });
 };

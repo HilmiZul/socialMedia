@@ -12,7 +12,7 @@ export const post_api_detail = ({ dispatch, getState }) => (next) => (
   axios
     .post(`${url}`, data)
     .then((res) => {
-      dispatch(actions.apiPostSuccess());
+      dispatch(actions.apiPostSuccess(res.data));
       dispatch(actions.apiGetUserBegan({ url: "./user" }));
     })
     .catch((error) => {

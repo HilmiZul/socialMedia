@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import classes from "./scream.module.css";
+import DeleteScream from "./deleteScream";
+
 // MUI Stuff
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
@@ -10,6 +12,9 @@ import Typography from "@material-ui/core/Typography";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import LikeButton from "./likeButton";
+
+// Redux
+import { connect } from "react-redux";
 
 class Scream extends Component {
   render() {
@@ -22,8 +27,14 @@ class Scream extends Component {
       userHandle,
       likeCount,
       screamId,
-      commentCount,
     } = this.props.scream;
+
+    const deleteButton =
+      this.props.user.authenticated &&
+      userHandle === this.props.user.credentials.handle ? (
+        <DeleteScream screamId={screamId} />
+      ) : null;
+
     return (
       <Card className={classes.Card}>
         <CardMedia
@@ -40,6 +51,7 @@ class Scream extends Component {
           >
             {userHandle}
           </Typography>
+          {deleteButton}
           <Typography variant="body2" color="textSecondary">
             {dayjs(createdAt).fromNow()}
           </Typography>
@@ -53,4 +65,8 @@ class Scream extends Component {
 }
 
 //connect subscribe/unsubscribe the redux store
-export default Scream;
+const mapStateToProps = (state) => ({
+  user: state.user,
+});
+
+export default connect(mapStateToProps)(Scream);

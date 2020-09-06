@@ -54,6 +54,20 @@ export default function (state = initialState, action) {
     case actions.apiUnLikeScreamFailed.type:
       console.log("apiLikeScreamFailed : ", action.payload);
 
+    // eslint-disable-next-line no-fallthrough
+    case actions.apiDeleteSuccess.type:
+      console.log(" apiDeleteSuccess screamId is..", action.payload.screamId);
+      const i = state.screams.findIndex(
+        (scream) => scream.screamId === action.payload.screamId
+      );
+      state.screams.splice(i, 1);
+      return {
+        ...state,
+      };
+
+    case actions.apiDeleteFailed.type:
+      console.log("apiLikeScreamFailed : ", action.payload);
+
     default:
       return state;
   }

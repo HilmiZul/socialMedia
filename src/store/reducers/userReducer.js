@@ -4,13 +4,14 @@ import { setAuthorizationHeader, removeAuthorizationHeader } from "../helper";
 const initialState = {
   authenticated: false,
 
-  credentials: null,
+  credentials: "",
   likes: [],
   notifications: [],
 
   loading: false,
-  errors: null,
   fetch_loading: false,
+
+  errors: null,
   fetch_errors: null,
   image_errors: null,
 };
@@ -59,7 +60,7 @@ export default function (state = initialState, action) {
       };
 
     case actions.apiPostSuccess.type:
-      console.log("image successfully uploaded");
+      console.log("image successfully uploaded", action.payload);
       return {
         ...state,
       };

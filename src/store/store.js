@@ -3,11 +3,11 @@ import thunk from "redux-thunk";
 import { post_api } from "./middleware/postapi";
 import { request_api } from "./middleware/requestapi";
 import { post_api_detail } from "./middleware/postapidetail";
-
+import { delete_api } from "./middleware/deleteapi";
 import userReducer from "./reducers/userReducer";
 import dataReducer from "./reducers/dataReducer";
 
-const middleware = [thunk, post_api, request_api, post_api_detail];
+const middleware = [thunk, post_api, request_api, post_api_detail, delete_api];
 
 const reducers = combineReducers({
   user: userReducer,

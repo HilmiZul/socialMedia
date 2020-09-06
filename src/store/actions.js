@@ -31,3 +31,8 @@ export const apiUnLikeScreamFailed = createAction("apiUnLikeScreamFailed");
 
 //get user information
 export const apiUserInfo = createAction("apiUserInfo");
+
+//Delete
+export const apiDeleteBegan = createAction("apiDeleteBegan");
+export const apiDeleteSuccess = createAction("apiDeleteSuccess ");
+export const apiDeleteFailed = createAction("apiDeleteFailed");

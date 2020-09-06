@@ -19,7 +19,7 @@ export const post_api = ({ dispatch, getState }) => (next) => (action) => {
       if (error.response.data.general) {
         dispatch(actions.apiCallFailed(error.response.data.general));
       } else {
-        dispatch(actions.apiCallFailed(error.response.data.message));
+        dispatch(actions.apiCallFailed(error));
       }
     });
 };
