@@ -9,7 +9,6 @@ import { logoutUser } from "../store/actions";
 
 class Nav extends Component {
   render() {
-    console.log("this.props.authenticated", this.props.authenticated);
     return (
       <AppBar position="fixed">
         <Toolbar>

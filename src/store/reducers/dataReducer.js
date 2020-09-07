@@ -9,6 +9,19 @@ const initialState = {
 
 export default function (state = initialState, action) {
   switch (action.type) {
+    case actions.apiPostBegan.type:
+      console.log("posting data.. ");
+      return {
+        ...state,
+      };
+
+    case actions.apiPostSuccess.type:
+      console.log("apiPostSuccess.. ");
+      return {
+        ...state,
+        screams: [action.payload.newScream, ...state.screams],
+      };
+
     case actions.apiGetScreamBegan.type:
       console.log("user start fetching scream data");
       return {
@@ -36,9 +49,15 @@ export default function (state = initialState, action) {
 
     case actions.apiLikeScreamBegan.type:
       console.log("user start like a scream");
+      return {
+        ...state,
+      };
 
     case actions.apiUnLikeScreamBegan.type:
       console.log("user start unlike a scream");
+      return {
+        ...state,
+      };
 
     case actions.apiLikeScreamSuccess.type:
     case actions.apiUnLikeScreamSuccess.type:
@@ -49,10 +68,6 @@ export default function (state = initialState, action) {
       return {
         ...state,
       };
-
-    case actions.apiLikeScreamFailed.type:
-    case actions.apiUnLikeScreamFailed.type:
-      console.log("apiLikeScreamFailed : ", action.payload);
 
     // eslint-disable-next-line no-fallthrough
     case actions.apiDeleteSuccess.type:
@@ -67,6 +82,17 @@ export default function (state = initialState, action) {
 
     case actions.apiDeleteFailed.type:
       console.log("apiLikeScreamFailed : ", action.payload);
+      return {
+        ...state,
+      };
+
+    case actions.apiPostFailed.type:
+    case actions.apiLikeScreamFailed.type:
+    case actions.apiUnLikeScreamFailed.type:
+      console.log("Failed : ", action.payload);
+      return {
+        ...state,
+      };
 
     default:
       return state;

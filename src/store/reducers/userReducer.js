@@ -60,7 +60,7 @@ export default function (state = initialState, action) {
       };
 
     case actions.apiPostSuccess.type:
-      console.log("image successfully uploaded", action.payload);
+      console.log("post successfully", action.payload);
       return {
         ...state,
       };
@@ -82,7 +82,7 @@ export default function (state = initialState, action) {
       };
 
     case actions.apiPostFailed.type:
-      console.log("Image Failed: ", action.payload);
+      console.log("Post Failed: ", action.payload);
       return {
         ...state,
         image_errors: action.payload,
@@ -124,6 +124,9 @@ export default function (state = initialState, action) {
     case actions.apiLikeScreamFailed.type:
     case actions.apiUnLikeScreamFailed.type:
       console.log("apiLikeScreamFailed : ", action.payload);
+      return {
+        ...state,
+      };
 
     default:
       return state;

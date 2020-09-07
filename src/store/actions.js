@@ -11,6 +11,11 @@ export const apiPostBegan = createAction("apiPostBegan");
 export const apiPostSuccess = createAction("apiPostSuccess");
 export const apiPostFailed = createAction("apiIPostFailed");
 
+//post scream
+export const apiPostScreamBegan = createAction("apiPostScreamBegan ");
+export const apiPostScreamSuccess = createAction("apiPostScreamSuccess");
+export const apiPostScreamFailed = createAction("apiPostScreamFailed");
+
 //user get user request
 export const apiGetUserBegan = createAction("apiGetUserBegan ");
 export const apiGetUserSuccess = createAction("apiGetUserSuccess");

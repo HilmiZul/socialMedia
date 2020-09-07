@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
+import EditProfile from "./editProfile";
+import PostScream from "./postScream";
 import { Link } from "react-router-dom";
 import MyButton from "../util/myButton";
 import dayjs from "dayjs";
@@ -21,7 +23,6 @@ import EmailIcon from "@material-ui/icons/Email";
 //redux
 import { connect } from "react-redux";
 import { apiPostBegan } from "../store/actions";
-import EditProfile from "./editProfile";
 
 class Profile extends Component {
   handleEditPicture = () => {
@@ -67,6 +68,7 @@ class Profile extends Component {
               btnClassName="button"
             >
               <EditIcon color="primary" />
+              <h6>Edit Profile Image</h6>
             </MyButton>
           </div>
           <hr />
@@ -107,7 +109,10 @@ class Profile extends Component {
             <CalendarToday color="primary" />{" "}
             <span>Joined {dayjs(createdAt).format("MMM YYYY")}</span>
           </div>
-          <EditProfile />
+          <div style={{ margin: "20px" }}>
+            <EditProfile />
+            <PostScream />
+          </div>
         </Paper>
       );
     } else {
