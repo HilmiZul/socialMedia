@@ -35,7 +35,7 @@ class Home extends Component {
 
 //state from the store, and properties of this object become our props
 const mapStateToProps = (state) => ({
-  data: state.data, //screams does not change, because shallow copy of scream object
+  data: state.data, //cannot query state.data.screams
 });
 
 //takes dispatch from the store and dispatch an action

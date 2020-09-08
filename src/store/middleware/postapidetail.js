@@ -8,18 +8,27 @@ export const post_api_detail = ({ dispatch, getState }) => (next) => (
   //if action is a function such as api call then
   next(action); // passing action to next middleware - the reducer
 
-  const { url, data } = action.payload;
-  axios
-    .post(`${url}`, data)
-    .then((res) => {
-      dispatch(actions.apiPostSuccess(res.data));
-      dispatch(actions.apiGetUserBegan({ url: "./user" }));
-    })
-    .catch((error) => {
-      if (error.response.data.general) {
-        dispatch(actions.apiPostFailed(error.response.data.general));
-      } else {
+  const { url, data, reducer } = action.payload;
+
+  if (reducer === "user") {
+    axios
+      .post(`${url}`, data)
+      .then((res) => {
+        dispatch(actions.apiPostSuccess({ ...res.data, reducer }));
+
+        dispatch(actions.apiGetUserBegan({ url: "./user" }));
+      })
+      .catch((error) => {
         dispatch(actions.apiPostFailed(error.response));
-      }
-    });
+      });
+  } else {
+    axios
+      .post(`${url}`, data)
+      .then((res) => {
+        dispatch(actions.apiPostSuccess({ ...res.data, reducer }));
+      })
+      .catch((error) => {
+        dispatch(actions.apiPostFailed(error.response));
+      });
+  }
 };

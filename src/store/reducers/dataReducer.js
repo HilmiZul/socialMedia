@@ -1,7 +1,8 @@
 import * as actions from "../actions";
 
 const initialState = {
-  screams: null,
+  screams: [],
+  scream: {},
   loading: false,
   errors: null,
   like_errors: null,
@@ -16,11 +17,24 @@ export default function (state = initialState, action) {
       };
 
     case actions.apiPostSuccess.type:
-      console.log("apiPostSuccess.. ");
-      return {
-        ...state,
-        screams: [action.payload.newScream, ...state.screams],
-      };
+      if (action.payload.reducer === "comment") {
+        console.log("comment apiPostSuccess.. ");
+        let index = state.screams.findIndex(
+          (scream) => scream.screamId === action.payload.screamId
+        );
+        state.screams[index].commentCount += 1;
+        return {
+          ...state,
+        };
+      } else if (action.payload.reducer === "data") {
+        console.log("post scream apiPostSuccess.. ");
+        return {
+          ...state,
+          screams: [action.payload.newScream, ...state.screams],
+        };
+      } else {
+        return { ...state };
+      }
 
     case actions.apiGetScreamBegan.type:
       console.log("user start fetching scream data");

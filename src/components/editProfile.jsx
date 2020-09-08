@@ -129,7 +129,8 @@ const mapStateToProps = (state) => ({
 //takes dispatch from the store and dispatch an action
 const mapActionsToProps = (dispatch) => {
   return {
-    postUserDetail: (url, data) => dispatch(apiPostBegan({ url, data })),
+    postUserDetail: (url, data) =>
+      dispatch(apiPostBegan({ url, data, reducer: "user" })),
   };
 };
 

@@ -15,10 +15,10 @@ import LikeButton from "./likeButton";
 
 // Redux
 import { connect } from "react-redux";
+import CommentButton from "./commentButton";
 
 class Scream extends Component {
   render() {
-    console.log("like count is ", this.props.scream.likeCount);
     dayjs.extend(relativeTime);
     const {
       body,
@@ -27,6 +27,7 @@ class Scream extends Component {
       userHandle,
       likeCount,
       screamId,
+      commentCount,
     } = this.props.scream;
 
     const deleteButton =
@@ -56,8 +57,17 @@ class Scream extends Component {
             {dayjs(createdAt).fromNow()}
           </Typography>
           <Typography variant="body1">{body}</Typography>
+
           <LikeButton screamId={screamId} />
-          <span>{likeCount} Likes</span>
+          <span>{likeCount} </span>
+          <CommentButton
+            body={body}
+            createdAt={createdAt}
+            userImage={userImage}
+            userHandle={userHandle}
+            screamId={screamId}
+          />
+          <span>{commentCount} </span>
         </CardContent>
       </Card>
     );

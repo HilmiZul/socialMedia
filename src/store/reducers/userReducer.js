@@ -60,7 +60,6 @@ export default function (state = initialState, action) {
       };
 
     case actions.apiPostSuccess.type:
-      console.log("post successfully", action.payload);
       return {
         ...state,
       };
